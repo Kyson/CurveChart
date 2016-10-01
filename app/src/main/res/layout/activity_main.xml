@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.tt.curvechatsample.MainActivity">
+    <!--<attr name="ccv_MaxValueMulti" format="float"/>
+    <attr name="ccv_MinValueMulti" format="float"/>
+    <attr name="ccv_YPartCount" format="integer"/>
+    <attr name="ccv_DataSize" format="integer"/>
+    <attr name="ccv_YUnitName" format="string"/>
+    <attr name="ccv_XYColor" format="color"/>
+    <attr name="ccv_XYStrokeWidth" format="float"/>
+    <attr name="ccv_LineColor" format="color"/>
+    <attr name="ccv_LineStrokeWidth" format="float"/>
+    <attr name="ccv_FillColor" format="color"/>-->
+    <com.tt.curvechartlib.CurveChartView
+        android:id="@+id/curve_chart_view"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:background="@color/colorPrimary"
+        app:ccv_DataSize="5"
+        app:ccv_FillColor="#ee3344"
+        app:ccv_LineColor="#00ffbb"
+        app:ccv_LineStrokeWidth="5"
+        app:ccv_MaxValueMulti="1.5"
+        app:ccv_MinValueMulti="0.8"
+        app:ccv_XTextPadding="30"
+        app:ccv_XYColor="#00ff00"
+        app:ccv_XYStrokeWidth="5"
+        app:ccv_YPartCount="3"
+        app:ccv_YTextPadding="30"
+        app:ccv_YUnitName="MB"/>
+
+</RelativeLayout>

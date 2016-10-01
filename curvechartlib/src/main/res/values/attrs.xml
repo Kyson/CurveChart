@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CurveChartView">
+        <attr name="ccv_XTextPadding" format="integer"/>
+        <attr name="ccv_YTextPadding" format="integer"/>
+        <attr name="ccv_MaxValueMulti" format="float"/>
+        <attr name="ccv_MinValueMulti" format="float"/>
+        <attr name="ccv_YPartCount" format="integer"/>
+        <attr name="ccv_DataSize" format="integer"/>
+        <attr name="ccv_YUnitName" format="string"/>
+        <attr name="ccv_XYColor" format="color"/>
+        <attr name="ccv_XYStrokeWidth" format="float"/>
+        <attr name="ccv_LineColor" format="color"/>
+        <attr name="ccv_LineStrokeWidth" format="float"/>
+        <attr name="ccv_FillColor" format="color"/>
+    </declare-styleable>
+</resources>
