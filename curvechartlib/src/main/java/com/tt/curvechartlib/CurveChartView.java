@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -16,9 +17,6 @@ import java.util.List;
  * Author: Kyson
  * Date: 2016/9/28
  * Copyright: Ctrip
- * //TODO 保留Y轴的有效数字
- * //TODO 画横线
- * // TODO 文字大小
  */
 public class CurveChartView extends View {
     private Config mConfig;
@@ -40,22 +38,13 @@ public class CurveChartView extends View {
         initWaveView(context, attrs);
     }
 
-    private Paint mXyPaint;
-    private Paint mLinePaint;
-    private Paint mFillPaint;
     private Path mLinePath;
     private Path mFillPath;
+    private Paint mPaint;
 
     private void initWaveView(Context context, AttributeSet attrs) {
-        mXyPaint = new Paint();
-        mXyPaint.setStyle(Paint.Style.STROKE);
-        mXyPaint.setAntiAlias(true);
-        mLinePaint = new Paint();
-        mLinePaint.setStyle(Paint.Style.STROKE);
-        mLinePaint.setAntiAlias(true);
-        mFillPaint = new Paint();
-        mFillPaint.setStyle(Paint.Style.FILL);
-        mFillPaint.setAntiAlias(true);
+        mPaint = new Paint();
+        mPaint.setAntiAlias(true);
         mLinePath = new Path();
         mFillPath = new Path();
         Config config;
@@ -72,12 +61,16 @@ public class CurveChartView extends View {
                     .setMinValueMulti(a.getFloat(R.styleable.CurveChartView_ccv_MinValueMulti, Config.DEFAULT_Y_MIN_MULTIPLE))
                     .setYPartCount(a.getInteger(R.styleable.CurveChartView_ccv_YPartCount, Config.DEFAULT_Y_PART_COUNT))
                     .setDataSize(a.getInteger(R.styleable.CurveChartView_ccv_DataSize, Config.DEFAULT_DATA_SIZE))
-                    .setYUnitName(a.getString(R.styleable.CurveChartView_ccv_YUnitName))
+                    .setYFormat(a.getString(R.styleable.CurveChartView_ccv_YFormat))
                     .setXYColor(a.getColor(R.styleable.CurveChartView_ccv_XYColor, Config.DEFAULT_XY_COLOR))
                     .setXYStrokeWidth(a.getFloat(R.styleable.CurveChartView_ccv_XYStrokeWidth, Config.DEFAULT_XY_STROKE_WIDTH))
                     .setLineColor(a.getColor(R.styleable.CurveChartView_ccv_LineColor, Config.DEFAULT_LINE_COLOR))
                     .setLineStrokeWidth(a.getFloat(R.styleable.CurveChartView_ccv_LineStrokeWidth, Config.DEFAULT_LINE_STROKE_WIDTH))
-                    .setFillColor(a.getColor(R.styleable.CurveChartView_ccv_FillColor, Config.DEFAULT_FILL_COLOR));
+                    .setFillColor(a.getColor(R.styleable.CurveChartView_ccv_FillColor, Config.DEFAULT_FILL_COLOR))
+                    .setYLabelColor(a.getColor(R.styleable.CurveChartView_ccv_YLabelColor, Config.DEFAULT_Y_LABEL_COLOR))
+                    .setYLabelSize(a.getFloat(R.styleable.CurveChartView_ccv_YLabelSize, Config.DEFAULT_Y_LABEL_SIZE))
+                    .setGraduatedLineColor(a.getColor(R.styleable.CurveChartView_ccv_GraduatedLineColor, Config.DEFAULT_GRADUATEDLINE_COLOR))
+                    .setGraduatedStrokeWidth(a.getFloat(R.styleable.CurveChartView_ccv_GraduatedLineStrokeWidth, Config.DEFAULT_GRADUATEDLINE_STROKE_WIDTH));
             a.recycle();
             config = builder.create();
         }
@@ -91,18 +84,13 @@ public class CurveChartView extends View {
         this.mConfig = config;
         mYLabels = new String[mConfig.mYPartCount];
         mDatas.clear();
-        mXyPaint.setColor(mConfig.mXYColor);
-        mXyPaint.setStrokeWidth(mConfig.mXYStrokeWidth);
-        mLinePaint.setColor(mConfig.mLineColor);
-        mLinePaint.setStrokeWidth(mConfig.mLineStrokeWidth);
-        mFillPaint.setColor(mConfig.mFillColor);
     }
 
     public void addData(float data) {
+        mDatas.add(data);
         if (mDatas.size() > mConfig.mDataSize) {
             mDatas.remove(0);
         }
-        mDatas.add(data);
         prepareData();
         postInvalidate();
     }
@@ -125,24 +113,39 @@ public class CurveChartView extends View {
      * @param canvas
      */
     private void drawXY(Canvas canvas) {
+        mPaint.reset();
+        mPaint.setStyle(Paint.Style.STROKE);
+        mPaint.setColor(mConfig.mXYColor);
+        mPaint.setStrokeWidth(mConfig.mXYStrokeWidth);
         // 画Y轴
-        canvas.drawLine(getXPoint(), getPaddingTop(), getXPoint(), getYPoint(), mXyPaint);
+        canvas.drawLine(getXPoint(), getPaddingTop(), getXPoint(), getYPoint(), mPaint);
         // 画X轴
-        canvas.drawLine(getXPoint(), getYPoint(), getWidth() - getPaddingRight(), getYPoint(), mXyPaint);
+        canvas.drawLine(getXPoint(), getYPoint(), getWidth() - getPaddingRight(), getYPoint(), mPaint);
     }
 
     /**
      * 画刻度和文字
      */
     private void drawScaleLabel(Canvas canvas) {
+        mPaint.reset();
+        mPaint.setStyle(Paint.Style.STROKE);
         createYText();
         int yIntervalLen = getYLen() / (mConfig.mYPartCount - 1);
         for (int i = 0; i < mConfig.mYPartCount; i++) {
             int scaleY = getYPoint() - yIntervalLen * i;
+            mPaint.setColor(mConfig.mGraduatedLineColor);
+            mPaint.setStrokeWidth(mConfig.mGraduatedLineStrokeWidth);
             // 刻度
-            canvas.drawLine(getXPoint(), scaleY, getXPoint() + 5, scaleY, mXyPaint);
+            canvas.drawLine(getXPoint(), scaleY, getWidth() - getPaddingRight(), scaleY, mPaint);
+
+            if (TextUtils.isEmpty(mConfig.mYFormat)) {
+                continue;
+            }
+            mPaint.setColor(mConfig.mYLabelColor);
+            mPaint.setStrokeWidth(0);
+            mPaint.setTextSize(mConfig.mYLabelSize);
             // 文字
-            canvas.drawText(mYLabels[i], getPaddingLeft(), scaleY, mXyPaint);
+            canvas.drawText(mYLabels[i], getPaddingLeft(), scaleY, mPaint);
         }
     }
 
@@ -159,8 +162,16 @@ public class CurveChartView extends View {
         }
         mFillPath.lineTo(getXPoint() + (size - 1) * getXLenPerCount(), getYPoint());
         mFillPath.close();
-        canvas.drawPath(mLinePath, mLinePaint);
-        canvas.drawPath(mFillPath, mFillPaint);
+
+        mPaint.reset();
+        mPaint.setStyle(Paint.Style.STROKE);
+        mPaint.setColor(mConfig.mLineColor);
+        mPaint.setStrokeWidth(mConfig.mLineStrokeWidth);
+        canvas.drawPath(mLinePath, mPaint);
+
+        mPaint.setStyle(Paint.Style.FILL);
+        mPaint.setColor(mConfig.mFillColor);
+        canvas.drawPath(mFillPath, mPaint);
     }
 
     /**
@@ -184,8 +195,11 @@ public class CurveChartView extends View {
     }
 
     private void createYText() {
+        if (TextUtils.isEmpty(mConfig.mYFormat)) {
+            return;
+        }
         for (int i = 0; i < mConfig.mYPartCount; i++) {
-            mYLabels[i] = String.format("%.1f%s", (((yMaxValue - yMinValue) * i) / (mConfig.mYPartCount - 1)) + yMinValue, mConfig.mYUnitName);
+            mYLabels[i] = String.format(mConfig.mYFormat, ((yMaxValue - yMinValue) * i) / (mConfig.mYPartCount - 1) + yMinValue);
         }
     }
 
@@ -204,7 +218,7 @@ public class CurveChartView extends View {
      * @return
      */
     private float getXLenPerCount() {
-        return (float) getXLen() / mConfig.mDataSize;
+        return (float) getXLen() / (mConfig.mDataSize - 1);
     }
 
     /**

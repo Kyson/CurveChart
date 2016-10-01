@@ -7,11 +7,16 @@
         <attr name="ccv_MinValueMulti" format="float"/>
         <attr name="ccv_YPartCount" format="integer"/>
         <attr name="ccv_DataSize" format="integer"/>
-        <attr name="ccv_YUnitName" format="string"/>
+        <!--<attr name="ccv_YUnitName" format="string"/>-->
+        <attr name="ccv_YFormat" format="string"/>
         <attr name="ccv_XYColor" format="color"/>
         <attr name="ccv_XYStrokeWidth" format="float"/>
         <attr name="ccv_LineColor" format="color"/>
         <attr name="ccv_LineStrokeWidth" format="float"/>
         <attr name="ccv_FillColor" format="color"/>
+        <attr name="ccv_YLabelColor" format="color"/>
+        <attr name="ccv_YLabelSize" format="float"/>
+        <attr name="ccv_GraduatedLineColor" format="color"/>
+        <attr name="ccv_GraduatedLineStrokeWidth" format="float"/>
     </declare-styleable>
 </resources>
