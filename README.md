@@ -4,7 +4,7 @@
 
 ## 预览
 
-<iframe height=498 width=510 src='http://player.youku.com/embed/XMTc0NTEzNDI2NA==' frameborder=0 'allowfullscreen'></iframe>
+![ccv_preview](https://github.com/Kyson/CurveChart/blob/master/ART/ccv_preview.gif)
 
 ## 使用
 
